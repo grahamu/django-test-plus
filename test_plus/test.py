@@ -324,6 +324,12 @@ class CBVTestCase(TestCase):
         instance.kwargs = kwargs
         return instance
 
+    def get_request(self):
+        """
+        Override this method to provide a custom `Request` object.
+        """
+        return RequestFactory().get('/')
+
     def get(self, cls, *args, **kwargs):
         """
         Calls cls.get() method after instantiating view class
@@ -333,7 +339,8 @@ class CBVTestCase(TestCase):
         initkwargs = kwargs.pop('initkwargs', None)
         if initkwargs is None:
             initkwargs = {}
-        request = RequestFactory().get('/')
+
+        request = self.get_request()
         instance = self.get_instance(cls, initkwargs=initkwargs, request=request, **kwargs)
         self.last_response = self.get_response(request, instance.get)
         self.context = self.last_response.context
@@ -351,7 +358,8 @@ class CBVTestCase(TestCase):
             data = {}
         if initkwargs is None:
             initkwargs = {}
-        request = RequestFactory().post('/', data)
+
+        request = self.get_request()
         instance = self.get_instance(cls, initkwargs=initkwargs, request=request, **kwargs)
         self.last_response = self.get_response(request, instance.post)
         self.context = self.last_response.context
