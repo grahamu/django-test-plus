@@ -21,7 +21,7 @@ Support
 
 Supports: Python 2 and Python 3
 
-Supports Django Versions: 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.11
+Supports Django Versions: 1.8, 1.9, 1.10, 1.11, 2.0
 
 Documentation
 --------------
@@ -231,9 +231,6 @@ method will create a user for you::
         user1 = self.make_user('u1')
         user2 = self.make_user('u2')
 
-**NOTE:** This work properly with version of Django prior to 1.6 and
-will use your own User class if you have created your own User model.
-
 If creating a User in your project is more complicated, say for example
 you removed the ``username`` field from the default Django Auth model
 you can provide a `Factory
@@ -358,10 +355,6 @@ more queries than you expect::
             self.get('some-view-with-6-queries')
 
 
-**NOTE:** This isn't possible in versions of Django prior to 1.6, so the
-context will run your code and assertions and issue a warning that it
-cannot check the number of queries generated.
-
 assertGoodView(url\_name, \*args, \*\*kwargs)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -377,6 +370,32 @@ can use it like this::
 
     def test_better_than_nothing(self):
         response = self.assertGoodView('my-url-name')
+
+Testing DRF views
+-----------------
+
+To take advantage of the convenience of DRF's test client, you can create a subclass of ``TestCase`` and set the ``client_class`` property::
+
+    from test_plus import TestCase
+    from rest_framework.test import APIClient
+
+
+    class APITestCase(TestCase):
+        client_class = APIClient
+
+For convenience, ``test_plus`` ships with ``APITestCase``, which does just that::
+
+    from test_plus import APITestCase
+
+
+    class MyAPITestCase(APITestCase):
+
+        def test_post(self):
+            data = {'testing': {'prop': 'value'}}
+            self.post('view-json', data=data, extra={'format': 'json'})
+            self.response_200()
+
+Note that using ``APITestCase`` requires Django >= 1.8 and having installed ``django-rest-framework``.
 
 Testing class-based "generic" views
 ------------------------------------

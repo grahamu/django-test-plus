@@ -22,8 +22,6 @@ SECRET_KEY = 'mlqc(f8*woj%&b(gf=al7yc8$v3+(b8-=k&50%vyao8p5u8b6*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -39,7 +37,7 @@ INSTALLED_APPS = (
     'test_app',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -47,6 +45,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+# Backwards compatibility for Django < 1.10
+MIDDLEWARE_CLASSES = MIDDLEWARE
 
 ROOT_URLCONF = 'test_app.urls'
 
@@ -63,11 +64,6 @@ DATABASES = {
     }
 }
 
-# For Django <1.10
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'test_project/templates'),
-)
-
 # For Django 1.10+
 TEMPLATES = [
     {
@@ -83,6 +79,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'debug': True
         }
     }
 ]
